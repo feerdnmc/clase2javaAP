@@ -1,0 +1,101 @@
+public class Producto {
+    private String nombre;
+    private double precio;
+
+    public Producto(String nombre, double precio) {
+        this.nombre = nombre;
+        this.precio = precio;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public double getPrecio() {
+        return precio;
+    }
+}
+
+public class ItemCarrito {
+    private Producto producto;
+    private int cantidad;
+
+    public ItemCarrito(Producto producto, int cantidad) {
+        this.producto = producto;
+        this.cantidad = cantidad;
+    }
+
+    public Producto getProducto() {
+        return producto;
+    }
+
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public double getSubtotal() {
+        return producto.getPrecio() * cantidad;
+    }
+}
+
+public class Carrito {
+    private List<ItemCarrito> items;
+    private Descuento descuento;
+
+    public Carrito() {
+        this.items = new ArrayList<>();
+    }
+
+    public void agregarItem(ItemCarrito item) {
+        items.add(item);
+    }
+
+    public List<ItemCarrito> getItems() {
+        return items;
+    }
+
+    public double getTotal() {
+        double total = 0;
+        for (ItemCarrito item : items) {
+            total += item.getSubtotal();
+        }
+        if (descuento != null) {
+            total -= descuento.getValorDescuento(total);
+        }
+        return total;
+    }
+
+    public void aplicarDescuento(Descuento descuento) {
+        this.descuento = descuento;
+    }
+}
+
+public abstract class Descuento {
+    public abstract double getValorDescuento(double total);
+}
+
+public class DescuentoPorcentaje extends Descuento {
+    private double porcentaje;
+
+    public DescuentoPorcentaje(double porcentaje) {
+        this.porcentaje = porcentaje;
+    }
+
+    @Override
+    public double getValorDescuento(double total) {
+        return total * porcentaje / 100;
+    }
+}
+
+public class DescuentoMonto extends Descuento {
+    private double monto;
+
+    public DescuentoMonto(double monto) {
+        this.monto = monto;
+    }
+
+    @Override
+    public double getValorDescuento(double total) {
+        return monto;
+    }
+}
